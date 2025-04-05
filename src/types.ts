@@ -46,11 +46,16 @@ export interface FooterProps {
   total: number;
 }
 
-export interface ImageObject {
+export interface MediaObject {
   id?: string | number;
   thumbUrl?: string;
   url: string;
+  kind?: 'img' | 'vid';
+  mime?: string;
 }
+
+// For backward compatibility
+export type ImageObject = MediaObject;
 
 export interface ImagePreviewProps {
   index: number;
@@ -65,8 +70,11 @@ export interface ImagePreviewProps {
   ) => React.ReactNode;
 }
 
-export interface RenderImageProps {
-  item: ImageObject;
+export interface RenderMediaProps {
+  item: MediaObject;
   index: number;
   resizeMode?: ImageResizeMode;
 }
+
+// For backward compatibility
+export type RenderImageProps = RenderMediaProps;

@@ -8,9 +8,10 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { ImageObject, IProps, RenderImageProps } from './types';
+import { MediaObject, IProps, RenderMediaProps } from './types';
 import ImagePreview from './ImagePreview';
 import SwipeContainer from './SwipeContainer';
+import { Ionicons } from '@expo/vector-icons';
 
 const { height: deviceHeight, width: deviceWidth } = Dimensions.get('window');
 
@@ -45,9 +46,9 @@ const ImageGallery = (props: IProps & typeof defaultProps) => {
   const topRef = useRef<FlatList>(null);
   const bottomRef = useRef<FlatList>(null);
 
-  const keyExtractorThumb = (item: ImageObject, index: number) =>
+  const keyExtractorThumb = (item: MediaObject, index: number) =>
     item && item.id ? item.id.toString() : index.toString();
-  const keyExtractorImage = (item: ImageObject, index: number) =>
+  const keyExtractorImage = (item: MediaObject, index: number) =>
     item && item.id ? item.id.toString() : index.toString();
 
   const scrollToIndex = (i: number) => {
@@ -74,7 +75,7 @@ const ImageGallery = (props: IProps & typeof defaultProps) => {
     }
   };
 
-  const renderItem = ({ item, index }: RenderImageProps) => {
+  const renderItem = ({ item, index }: RenderMediaProps) => {
     return (
       <ImagePreview
         index={index}
@@ -86,7 +87,7 @@ const ImageGallery = (props: IProps & typeof defaultProps) => {
     );
   };
 
-  const renderThumb = ({ item, index }: RenderImageProps) => {
+  const renderThumb = ({ item, index }: RenderMediaProps) => {
     return (
       <TouchableOpacity
         onPress={() => scrollToIndex(index)}
@@ -95,20 +96,27 @@ const ImageGallery = (props: IProps & typeof defaultProps) => {
         {renderCustomThumb ? (
           renderCustomThumb(item, index, activeIndex === index)
         ) : (
-          <Image
-            resizeMode={thumbResizeMode}
-            style={
-              activeIndex === index
-                ? [
+          <View style={{ position: 'relative' }}>
+            <Image
+              resizeMode={thumbResizeMode}
+              style={
+                activeIndex === index
+                  ? [
                     styles.thumb,
                     styles.activeThumb,
                     { borderColor: thumbColor },
                     { width: thumbSize, height: thumbSize },
                   ]
-                : [styles.thumb, { width: thumbSize, height: thumbSize }]
-            }
-            source={{ uri: item.thumbUrl ? item.thumbUrl : item.url }}
-          />
+                  : [styles.thumb, { width: thumbSize, height: thumbSize }]
+              }
+              source={{ uri: item.thumbUrl ? item.thumbUrl : item.url }}
+            />
+            {item.kind === 'vid' && (
+              <View style={styles.videoIconContainer}>
+                <Ionicons name="play-circle" size={24} color="rgba(255,255,255,0.9)" />
+              </View>
+            )}
+          </View>
         )}
       </TouchableOpacity>
     );
@@ -127,7 +135,7 @@ const ImageGallery = (props: IProps & typeof defaultProps) => {
     }
   }, [isOpen, initialIndex]);
 
-  const getImageLayout = useCallback((_, index) => {
+  const getImageLayout = useCallback((_: any, index: number) => {
     return {
       index,
       length: deviceWidth,
@@ -136,7 +144,7 @@ const ImageGallery = (props: IProps & typeof defaultProps) => {
   }, []);
 
   const getThumbLayout = useCallback(
-    (_, index) => {
+    (_: any, index: number) => {
       return {
         index,
         length: thumbSize,
@@ -230,6 +238,17 @@ const styles = StyleSheet.create({
   },
   bottomFlatlist: {
     position: 'absolute',
+  },
+  videoIconContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    borderRadius: 12,
   },
 });
 
