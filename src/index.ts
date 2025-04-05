@@ -1,2 +1,2 @@
 export { default as ImageGallery } from './ImageGallery';
-export { ImageObject } from './types';
+export { ImageObject, MediaObject } from './types';
