@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import {
   Dimensions,
   Image,
@@ -19,7 +19,16 @@ const ImagePreview = ({
   resizeMode,
 }: ImagePreviewProps) => {
   const [status, setStatus] = useState<AVPlaybackStatus>({} as AVPlaybackStatus);
-  const videoRef = useRef(null);
+  const videoRef = useRef<Video | null>(null);
+
+  // Make sure video is paused when component unmounts or when not selected
+  useEffect(() => {
+    return () => {
+      if (videoRef.current && item.kind === 'vid') {
+        videoRef.current.pauseAsync?.();
+      }
+    };
+  }, [item.kind]);
 
   // Render video player if media is a video
   const renderVideo = () => (

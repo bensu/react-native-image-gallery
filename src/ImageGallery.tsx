@@ -220,6 +220,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 0,
     width: '100%',
+    height: 70, // Add height to ensure there's enough space for controls
+    zIndex: 100, // Ensure header is always on top
   },
   footer: {
     bottom: 0,
